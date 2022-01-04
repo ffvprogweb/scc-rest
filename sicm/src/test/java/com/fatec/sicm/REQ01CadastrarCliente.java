@@ -2,20 +2,31 @@ package com.fatec.sicm;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.fatec.sicm.mantemCliente.model.Cliente;
+import com.fatec.sicm.mantemCliente.ports.ClienteService;
 
 @SpringBootTest
 class REQ01CadastrarCliente {
+	
+	@Autowired
+	ClienteService servico;
 
 	// MethodUnderTest is the name of the method you are testing.
 	// Scenario is the condition under which you test the method.
 	// ExpectedResult is what you expect the method under test to do in the current
+	
+	//-------------------------------------------------------------------------------------------------------------------
+	// testes de unidade
+	//-------------------------------------------------------------------------------------------------------------------
 	@Test
 	void quando_cadastra_cliente_valido_data_deve_ser_a_data_atual() {
 		// Dado
@@ -58,4 +69,19 @@ class REQ01CadastrarCliente {
 		}
 		
 	}
+	//-------------------------------------------------------------------------------------------------------------------
+	// testes de integração
+	//-------------------------------------------------------------------------------------------------------------------
+	
+	@Test
+	void quando_existem_dois_clientes_cadastrados_consulta_todos_retorna2() {
+		
+		//Dado que existem 2 clientes cadastrados
+		//Quando consulta todos
+		List<Cliente> listaDeClientes = servico.consultaTodos();
+		//Entao 
+		assertEquals(2,listaDeClientes.size());
+		
+	}
+	
 }
