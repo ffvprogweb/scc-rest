@@ -3,7 +3,9 @@ package com.fatec.sicm.mantemCliente.model;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,11 +24,13 @@ public class Cliente {
 	private Long id;
 	@NotBlank(message="Nome é requerido")
 	private String nome;
-	@Pattern(regexp="^(0?[1-9]|[12][0-9]|3[01])[\\/-](0?[1-9]|1[012])[\\/-]\\d{4}$", message="A data de vencimento deve estar no formato MM/YY") //https://www.regular-expressions.info/
-	private String dataCadastro;
+	@Pattern(regexp="^(0?[1-9]|[12][0-9]|3[01])[\\/-](0?[1-9]|1[012])[\\/-]\\d{4}$", message="A data de vencimento deve estar no formato dd/MM/YYYY")
+	//https://www.regular-expressions.info/
 	private String dataNascimento;
+	private String dataCadastro;
 	private String sexo;
 	@CPF
+	@Column(unique = true) // nao funciona com @Valid tem que tratar na camada de persistencia
 	private String cpf;
 	@NotBlank(message="O CEP é obritatório.")
 	private String cep;
@@ -35,17 +39,14 @@ public class Cliente {
 	private String complemento;
 	
 	
-	public Cliente(String nome, String dataNascimento, String sexo, String cpf,  String cep, String endereco, String complemento) {
+	public Cliente(String nome, String dataNascimento, String sexo, String cpf,  String cep, String complemento) {
 	
 		this.nome = nome;
 		setDataNascimento(dataNascimento);
 		this.sexo = sexo;
 		this.cpf = cpf;
 		this.cep = cep;
-		this.endereco = endereco;
 		this.complemento = complemento;
-		DateTime dataAtual = new DateTime();
-		setDataCadastro(dataAtual);
 		
 	}
 	public Cliente() {
@@ -66,16 +67,13 @@ public class Cliente {
 	public String getDataCadastro() {
 		return dataCadastro;
 	}
-	public void setDataCadastro(DateTime dataAtual) {
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/YYYY");
-		this.dataCadastro = dataAtual.toString(fmt);
+	public void setDataCadastro(String dataAtual) {
+		this.dataCadastro = dataAtual;
 	}
 	public String getDataNascimento() {
 		return dataNascimento;
 	}
 	public void setDataNascimento(String dataNascimento)  {
-		boolean isValida = false;
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy/MM/dd");
 		if (validaData(dataNascimento) == true) {
 			this.dataNascimento = dataNascimento;
 		} else {
@@ -123,11 +121,34 @@ public class Cliente {
 			return false;
 		}
 	}
+	public void obtemDataAtual(DateTime dataAtual) {
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/YYYY");
+		this.dataCadastro = dataAtual.toString(fmt);
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(cep, complemento, cpf, dataCadastro, dataNascimento, endereco, id, nome, sexo);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cliente other = (Cliente) obj;
+		return Objects.equals(cep, other.cep) && Objects.equals(complemento, other.complemento)
+				&& Objects.equals(cpf, other.cpf) && Objects.equals(dataCadastro, other.dataCadastro)
+				&& Objects.equals(dataNascimento, other.dataNascimento) && Objects.equals(endereco, other.endereco)
+				&& Objects.equals(id, other.id) && Objects.equals(nome, other.nome) && Objects.equals(sexo, other.sexo);
+	}
 	@Override
 	public String toString() {
-		return "Cliente [id=" + id + ", nome=" + nome + ", dataCadastro=" + dataCadastro + ", dataNascimento="
-				+ dataNascimento + ", sexo=" + sexo + ", cpf=" + cpf + ", cep=" + cep + ", endereco=" + endereco
+		return "Cliente [id=" + id + ", nome=" + nome + ", dataNascimento=" + dataNascimento + ", dataCadastro="
+				+ dataCadastro + ", sexo=" + sexo + ", cpf=" + cpf + ", cep=" + cep + ", endereco=" + endereco
 				+ ", complemento=" + complemento + "]";
 	}
+	
 	
 }
