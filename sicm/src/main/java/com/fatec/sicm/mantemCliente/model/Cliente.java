@@ -125,9 +125,10 @@ public class Cliente {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/YYYY");
 		this.dataCadastro = dataAtual.toString(fmt);
 	}
+	
 	@Override
 	public int hashCode() {
-		return Objects.hash(cep, complemento, cpf, dataCadastro, dataNascimento, endereco, id, nome, sexo);
+		return Objects.hash(cep, complemento, cpf, dataCadastro, dataNascimento, endereco, nome, sexo);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -141,7 +142,7 @@ public class Cliente {
 		return Objects.equals(cep, other.cep) && Objects.equals(complemento, other.complemento)
 				&& Objects.equals(cpf, other.cpf) && Objects.equals(dataCadastro, other.dataCadastro)
 				&& Objects.equals(dataNascimento, other.dataNascimento) && Objects.equals(endereco, other.endereco)
-				&& Objects.equals(id, other.id) && Objects.equals(nome, other.nome) && Objects.equals(sexo, other.sexo);
+				&& Objects.equals(nome, other.nome) && Objects.equals(sexo, other.sexo);
 	}
 	@Override
 	public String toString() {

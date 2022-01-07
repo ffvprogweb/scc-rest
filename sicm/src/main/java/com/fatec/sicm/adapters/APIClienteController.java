@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,5 +86,24 @@ public class APIClienteController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+	@PutMapping("/{id}")
+	public ResponseEntity<?> update(@Valid @RequestBody Cliente clienteModificado, BindingResult result) {
+		logger.info(">>>>>> 1. controller cadastrar - post iniciado");
+		ResponseEntity<?> response = null;
+		if (result.hasErrors()) {
+			logger.info(">>>>>> controller create - dados inválidos => " + clienteModificado.toString());
+			response = ResponseEntity.badRequest().body("Dados inválidos.");
+		} else {
+			Optional<Cliente> umCliente = Optional.ofNullable(servico.consultaPorCpf(clienteModificado.getCpf()));
+			if (umCliente.isPresent()) {
+				logger.info(">>>>>> controller create - cliente já cadastrado");
+				response = ResponseEntity.badRequest().body("Cliente já cadastrado");
+			} else {
+				response = ResponseEntity.status(HttpStatus.CREATED).body(servico.save(clienteModificado));
+				logger.info(">>>>>> controller create - cadastro realizado com sucesso");
+			}
+		}
+		return response;
 	}
 }

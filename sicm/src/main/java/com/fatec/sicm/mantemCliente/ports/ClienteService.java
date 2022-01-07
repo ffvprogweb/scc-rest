@@ -12,6 +12,6 @@ public interface ClienteService {
 	Optional<Cliente> consultaPorId(Long id);
 	Cliente save(Cliente cliente);
 	void delete (Long id);
-	Cliente update (Long id, Cliente cliente);
+	Cliente update ( Cliente cliente);
 
 }
