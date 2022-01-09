@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.fatec.sicm.mantemCliente.model.Cliente;
-import com.fatec.sicm.mantemCliente.ports.ClienteService;
 import com.fatec.sicm.mantemCliente.services.ClienteServicoI;
 import com.google.gson.Gson;
 
@@ -32,8 +31,8 @@ class REQ01CadastrarClienteAPITests {
 		
 		Cliente cliente = new Cliente("Jose", "12/02/1960", "M", "32751358136", "04280130", "2983");
 		cliente.obtemDataAtual(new DateTime());
-		cliente.setEndereco(servico.obtemEndereco(cliente.getCep()));
 		Gson dadosDeEntrada = new Gson();
+		cliente.setEndereco("Rua Frei João");
 		String entity = dadosDeEntrada.toJson(cliente);
 		
 		HttpHeaders headers = new HttpHeaders();
@@ -45,11 +44,11 @@ class REQ01CadastrarClienteAPITests {
 		
 	}
 	@Test
-	void ct02_quando_cliente_ja_cadastrado_retorna_erro() {
+	void ct02_dado_que_o_cliente_esta_cadastrado_quando_confirma_o_cadastrado_retorna_erro() {
 		
 		Cliente cliente = new Cliente("Jose", "12/02/1960", "M", "99504993052", "04280130", "2983");
 		cliente.obtemDataAtual(new DateTime());
-		cliente.setEndereco(servico.obtemEndereco(cliente.getCep()));
+		//cliente.setEndereco(servico.obtemEndereco(cliente.getCep()));
 		Gson dadosDeEntrada = new Gson();
 		String entity = dadosDeEntrada.toJson(cliente);
 		
@@ -59,7 +58,25 @@ class REQ01CadastrarClienteAPITests {
 		//neste caso a resposta esperada nao eh um objeto cliente é o string "Cliente ja cadastrado".
 		ResponseEntity<String> resposta = testRestTemplate.exchange(urlBase,HttpMethod.POST, httpEntity, String.class);
 		assertEquals(HttpStatus.BAD_REQUEST, resposta.getStatusCode());
-		assertEquals("Cliente já cadastrado", resposta.getBody());
+		assertEquals("Cliente já cadastrado ou CEP inválido", resposta.getBody());
+	}
+	@Test
+	void ct03_dado_que_o_cpf_nao_esta_cadastrado_quando_cadastra_com_cep_invalido_retorna_erro() {
+		//Dado que o cpf nao esta cadastrado e o CEP eh invalido
+		Cliente cliente = new Cliente("Jose", "12/02/1960", "M", "68512460407", "0428013", "2983");
+		cliente.obtemDataAtual(new DateTime());
+		Gson dadosDeEntrada = new Gson();
+		String entity = dadosDeEntrada.toJson(cliente);
 		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> httpEntity = new HttpEntity<>(entity,headers);
+		
+		//neste caso a resposta esperada nao eh um objeto cliente é o string "Cliente ja cadastrado ou CEP invalido".
+		//Quando solicita o cadastro
+		ResponseEntity<String> resposta = testRestTemplate.exchange(urlBase,HttpMethod.POST, httpEntity, String.class);
+		//Entao retorna CEP invalido
+		assertEquals(HttpStatus.BAD_REQUEST, resposta.getStatusCode());
+		assertEquals("Cliente já cadastrado ou CEP inválido", resposta.getBody());
 	}
 }
