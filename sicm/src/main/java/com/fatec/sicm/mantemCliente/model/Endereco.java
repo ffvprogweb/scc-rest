@@ -1,14 +1,5 @@
 package com.fatec.sicm.mantemCliente.model;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-@Entity
 public class Endereco {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String cpf;
 	private String cep;
@@ -17,10 +8,8 @@ public class Endereco {
 	private String bairro;
 	private String localidade;
 	private String uf;
-
 	public Endereco() {
 	}
-
 	public Endereco(String cpf, String cep, String logradouro, String complemento, String bairro, String localidade,
 			String uf) {
 		this.cpf = cpf;

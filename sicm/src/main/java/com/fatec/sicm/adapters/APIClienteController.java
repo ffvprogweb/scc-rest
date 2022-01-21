@@ -71,7 +71,7 @@ public class APIClienteController {
 		}
 		return new ResponseEntity<>(listaDeClientes, HttpStatus.OK);
 	}
-	@Operation(summary = "Busca por CPF.")
+	@Operation(summary = "Busca cliente por CPF.")
 	@GetMapping("/{cpf}")
 	public ResponseEntity<Cliente> findByCpf(@PathVariable String cpf) {
 		logger.info(">>>>>> 1. controller chamou servico consulta por cpf => " + cpf);
@@ -85,7 +85,7 @@ public class APIClienteController {
 		}
 		return response;
 	}
-	@Operation(summary = "Busca por ID.")
+	@Operation(summary = "Busca cliente por ID.")
 	@GetMapping("/id/{id}") // pagina 144 do spring in action
 	public ResponseEntity<Cliente> findById(@PathVariable String id) {
 		logger.info(">>>>>> 1. controller chamou servico consulta por id => " + id);
