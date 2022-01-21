@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -19,7 +21,7 @@ import com.fatec.sicm.mantemCliente.ports.ClienteService;
 
 @SpringBootTest
 class REQ01CadastrarClienteTests {
-
+	Logger logger = LogManager.getLogger(this.getClass());
 	@Autowired
 	ClienteService servico;
     @Autowired
@@ -110,16 +112,17 @@ class REQ01CadastrarClienteTests {
 	}
 	@Test
 	void ct06_quando_cliente_ja_cadastrado_retorna_erro() {
+		logger.info(">>>>>> caso de teste 6");
 		// Dado que o cliente ja esta cadastrado
 		// Quando
-		try {
+	
 			Cliente cliente = new Cliente("Jose", "31/03/1960", "M", "99504993052", "08545160", "2983");
-			servico.save(cliente);
-			fail("Quando cliente ja cadastrado deveria falhar.");
-		} catch (DataIntegrityViolationException e) {
-			assertEquals("could not execute statement",e.getMessage().substring(0, 27));
+			Cliente umCliente = servico.save(cliente);
+		
+		//(DataIntegrityViolationException e) {
+			assertNull(umCliente);
 		}
-	}
+	
 	@Test
 	void ct07_quando_cpf_invalido_retorna_erro() {
 		// Dado que o cpf é invalido

@@ -24,7 +24,6 @@ class REQ03AlterarClienteTests {
 	@Autowired
 	ClienteServicoI servico;
 	
-	
 	@Test
 	void ct01_quando_cliente_esta_cadastrado_retorna_cliente_alterado() {
 		Optional<Cliente> umCliente = servico.consultaPorId(1L);
@@ -34,12 +33,12 @@ class REQ03AlterarClienteTests {
 		assertTrue(clienteModificado.equals(cliente));
 	}
 	@Test
-	void ct02_quando_cep_invalido_retorna_erro() {
+	void ct02_quando_cep_invalido_servico_altera_cliente_retorna_nulo() {
 		Optional<Cliente> umCliente = servico.consultaPorId(1L);
 		Cliente clienteModificado = umCliente.get();
 		clienteModificado.setNome("Jose da Silva");
 		clienteModificado.setCep("00");
 		Cliente cliente = servico.altera(clienteModificado);
-		assertTrue(clienteModificado.equals(cliente));
+		assertNull(cliente);
 	}
 }
