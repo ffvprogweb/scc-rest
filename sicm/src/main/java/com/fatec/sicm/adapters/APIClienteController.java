@@ -31,6 +31,8 @@ import com.fatec.sicm.mantemCliente.model.Cliente;
 
 import com.fatec.sicm.mantemCliente.ports.ClienteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController // controller deve retornar valores escritos diretamente no body da resposta
 @RequestMapping("/api/v1/clientes")
 public class APIClienteController {
@@ -38,7 +40,7 @@ public class APIClienteController {
 	Logger logger = LogManager.getLogger(this.getClass());
 	@Autowired
 	ClienteService servico;
-
+	@Operation(summary = "Cadastra um cliente.")
 	@PostMapping
 	public ResponseEntity<?> cadastrar(@Valid @RequestBody Cliente cliente, BindingResult result) {
 		logger.info(">>>>>> 1. controller cadastrar - post iniciado");
@@ -58,7 +60,7 @@ public class APIClienteController {
 		}
 		return response;
 	}
-
+	@Operation(summary = "Consulta todos os clientes na base.")
 	@GetMapping
 	public ResponseEntity<List<Cliente>> consultaTodos() {
 		logger.info(">>>>>> 1. controller consulta todos chamado");
@@ -69,7 +71,7 @@ public class APIClienteController {
 		}
 		return new ResponseEntity<>(listaDeClientes, HttpStatus.OK);
 	}
-
+	@Operation(summary = "Busca por CPF.")
 	@GetMapping("/{cpf}")
 	public ResponseEntity<Cliente> findByCpf(@PathVariable String cpf) {
 		logger.info(">>>>>> 1. controller chamou servico consulta por cpf => " + cpf);
@@ -83,7 +85,7 @@ public class APIClienteController {
 		}
 		return response;
 	}
-
+	@Operation(summary = "Busca por ID.")
 	@GetMapping("/id/{id}") // pagina 144 do spring in action
 	public ResponseEntity<Cliente> findById(@PathVariable String id) {
 		logger.info(">>>>>> 1. controller chamou servico consulta por id => " + id);
@@ -95,7 +97,7 @@ public class APIClienteController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-
+	@Operation(summary = "Atualiza as informações do cliente.")
 	@PutMapping("/id/{id}")
 	public ResponseEntity<Cliente> update(@PathVariable("id") long id, @RequestBody @Valid Cliente clienteModificado) {// throws
 		// URISyntaxException
@@ -109,7 +111,7 @@ public class APIClienteController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	@Operation(summary = "Excluir um cliente da base.")
 	@DeleteMapping("/id/{id}")
 	public ResponseEntity<String> remover(@PathVariable String id) {
 		Long ident = Long.parseLong(id);
